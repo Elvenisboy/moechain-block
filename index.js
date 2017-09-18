@@ -17,7 +17,7 @@ const params = require('ethereum-common/params.json')
  */
 var Block = module.exports = function (data) {
   this.transactions = []
-  this.uncleHeaders = []
+//  this.uncleHeaders = []
   this._inBlockChain = false
   this.txTrie = new Trie()
 
@@ -27,7 +27,7 @@ var Block = module.exports = function (data) {
     }
   })
 
-  var rawTransactions, rawUncleHeaders
+  var rawTransactions
 
   // defaults
   if (!data) {
@@ -41,23 +41,23 @@ var Block = module.exports = function (data) {
   if (Array.isArray(data)) {
     this.header = new BlockHeader(data[0])
     rawTransactions = data[1]
-    rawUncleHeaders = data[2]
+   // rawUncleHeaders = data[2]
   } else {
     this.header = new BlockHeader(data.header)
     rawTransactions = data.transactions || []
-    rawUncleHeaders = data.uncleHeaders || []
+   // rawUncleHeaders = data.uncleHeaders || []
   }
 
   // parse uncle headers
-  for (var i = 0; i < rawUncleHeaders.length; i++) {
-    this.uncleHeaders.push(new BlockHeader(rawUncleHeaders[i]))
-  }
+ // for (var i = 0; i < rawUncleHeaders.length; i++) {
+  //  this.uncleHeaders.push(new BlockHeader(rawUncleHeaders[i]))
+  //}
 
-  var homestead = this.isHomestead()
+ // var homestead = this.isHomestead()
   // parse transactions
   for (i = 0; i < rawTransactions.length; i++) {
     var tx = new Tx(rawTransactions[i])
-    tx._homestead = homestead
+  //  tx._homestead = homestead
     this.transactions.push(tx)
   }
 }
@@ -113,9 +113,9 @@ Block.prototype.serialize = function (rlpEncode) {
     raw[1].push(tx.raw)
   })
 
-  this.uncleHeaders.forEach(function (uncle) {
-    raw[2].push(uncle.raw)
-  })
+  //this.uncleHeaders.forEach(function (uncle) {
+   // raw[2].push(uncle.raw)
+ // })
 
   return rlpEncode ? rlp.encode(raw) : raw
 }
@@ -204,9 +204,9 @@ Block.prototype.validate = function (blockChain, cb) {
       errors.push(txErrors)
     }
 
-    if (!self.validateUnclesHash()) {
-      errors.push('invild uncle hash')
-    }
+   // if (!self.validateUnclesHash()) {
+     // errors.push('invild uncle hash')
+ //   }
 
     cb(arrayToString(errors))
   })
@@ -224,16 +224,16 @@ Block.prototype.toJSON = function (labeled) {
     var obj = {
       header: this.header.toJSON(true),
       transactions: [],
-      uncleHeaders: []
+     // uncleHeaders: []
     }
 
     this.transactions.forEach(function (tx) {
       obj.transactions.push(tx.toJSON(labeled))
     })
 
-    this.uncleHeaders.forEach(function (uh) {
-      obj.uncleHeaders.push(uh.toJSON())
-    })
+    //this.uncleHeaders.forEach(function (uh) {
+     // obj.uncleHeaders.push(uh.toJSON())
+  //  })
     return obj
   } else {
     return ethUtil.baToJSON(this.raw)
