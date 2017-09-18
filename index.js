@@ -185,7 +185,7 @@ Block.prototype.validate = function (blockChain, cb) {
 
   async.parallel([
     // validate uncles
-    self.validateUncles.bind(self, blockChain),
+    // self.validateUncles.bind(self, blockChain),
     // validate block
     self.header.validate.bind(self.header, blockChain),
     // generate the transaction trie
